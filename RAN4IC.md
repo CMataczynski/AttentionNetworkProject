@@ -26,7 +26,7 @@
 * Fully connected + softmax: 1000 neurons
 
 
-#Attention Module:
+# Attention Module:
 We make the size of the smallest output map in each mask
 branch 7×7 to be consistent with the smallest trunk output
 map size. Thus 3,2,1 max-pooling layers are used in mask
@@ -35,7 +35,7 @@ branch with input size 56×56, 28×28, 14×14 respectively.
 For structure see paper
 
 
-#Training:
+# Training:
 Nesterov SGD
 mini-batch: 64
 weight decay: 0.0001
