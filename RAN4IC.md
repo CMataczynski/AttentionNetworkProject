@@ -37,8 +37,13 @@ For structure see paper
 
 # Training:
 Nesterov SGD
+
 mini-batch: 64
+
 weight decay: 0.0001
+
 momentum: 0.9
+
 learning rate: 0.1 -64k iters-> 0.01 -96k iters-> 0.001
+
 Learning time: 160k iters
