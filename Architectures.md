@@ -66,3 +66,21 @@ Fig 3 in paper for implementation details
 
 ## Training
 Standard, with dropping learning rate every 30 epochs
+
+# Attention gated networks: Learning to leverage salient regions in medical images
+https://www.sciencedirect.com/science/article/pii/S1361841518306133
+## Model
+* 3 x Convolutional: 3x3 window, 8 filters, ReLu
+* 1 x MaxPooling: /2
+* 3 x Convolutional: 3x3 window, 16 filters, ReLu
+* 1 x MaxPooling: /2
+* 3 x Convolutional: 3x3 window, 32 filters, ReLu (1)
+* 1 x MaxPooling: /2
+* 2 x Convolutional: 3x3 window, 64 filters, ReLu (2)
+* 1 x MaxPooling: /2
+* 2 x Conbvolutional : 3x3 window, 64 filters, ReLu (3)
+* (1) -> 1x64 filters
+* (2) -> 1x64 filters
+* (3) -> 1x64 filters
+* Aggregation (1), (2), (3)
+* Prediction
