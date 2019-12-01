@@ -18,13 +18,15 @@ if __name__ == "__main__":
     training_transforms = transforms.Compose([
         transforms.ToPILImage(),
         transforms.RandomCrop(224),
-        transforms.ToTensor()
+        transforms.ToTensor(),
+        transforms.Normalize([0, 0, 0], [255, 255, 255])
     ])
 
     testing_transforms = transforms.Compose([
         transforms.ToPILImage(),
         transforms.FiveCrop(224),
         transforms.ToTensor(),
+        transforms.Normalize([0,0,0],[255,255,255]),
         transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops]))
     ])
 

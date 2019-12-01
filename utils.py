@@ -20,11 +20,11 @@ class USGDataset(Dataset):
         if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        image = self.whole_set['lower'][idx]/255
+        image = self.whole_set['lower'][idx]
         if self.transforms:
             image = self.transforms(image)
         label = torch.tensor(self.whole_set['target'][idx])
-        identifier = torch.tensor(self.whole_set['id'][idx])
+        identifier = torch.tensor(int(self.whole_set['id'][idx]))
 
         return {
             "image": image,
