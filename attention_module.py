@@ -1,5 +1,5 @@
 import torch.nn as nn
-from .residual_block import ResidualBlock
+from residual_block import ResidualBlock
 
 
 class AttentionModule_pre(nn.Module):

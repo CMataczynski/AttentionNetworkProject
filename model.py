@@ -1,6 +1,6 @@
 import torch.nn as nn
-from .residual_block import ResidualBlock
-from .attention_module import AttentionModule_stage1, AttentionModule_stage2, AttentionModule_stage3, AttentionModule_stage0
+from residual_block import ResidualBlock
+from attention_module import AttentionModule_stage1, AttentionModule_stage2, AttentionModule_stage3, AttentionModule_stage0
 
 
 class ResidualAttentionModel_92(nn.Module):

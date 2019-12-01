@@ -12,6 +12,8 @@ import tqdm
 if __name__ == "__main__":
     writer = SummaryWriter()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    if torch.cuda.is_available():
+        print("Using GPU")
 
     training_transforms = transforms.Compose([
         transforms.ToPILImage(),
