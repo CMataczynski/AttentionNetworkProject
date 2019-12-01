@@ -7,7 +7,36 @@ import torch.optim as optim
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
 import tqdm
+import pickle, copyreg
 
+class ForkingPickler(pickle.Pickler):
+    '''Pickler subclass used by multiprocessing.'''
+    _extra_reducers = {}
+    _copyreg_dispatch_table = copyreg.dispatch_table
+
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.dispatch_table = self._copyreg_dispatch_table.copy()
+        self.dispatch_table.update(self._extra_reducers)
+
+    @classmethod
+    def register(cls, type, reduce):
+        '''Register a reduce function for a type.'''
+        cls._extra_reducers[type] = reduce
+
+    @classmethod
+    def dumps(cls, obj, protocol=4):
+        buf = io.BytesIO()
+        cls(buf, protocol).dump(obj)
+        return buf.getbuffer()
+
+    loads = pickle.loads
+
+register = ForkingPickler.register
+
+def dump(obj, file, protocol=4):
+    '''Replacement for pickle.dump() using ForkingPickler.'''
+    ForkingPickler(file, protocol).dump(obj)
 
 if __name__ == "__main__":
     writer = SummaryWriter()
@@ -19,28 +48,25 @@ if __name__ == "__main__":
         transforms.ToPILImage(),
         transforms.RandomCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize([0, 0, 0], [255, 255, 255])
     ])
 
     testing_transforms = transforms.Compose([
         transforms.ToPILImage(),
         transforms.FiveCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize([0,0,0],[255,255,255]),
-        transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops]))
+        transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
     ])
 
     train_dataset = USGDataset("train_dataset.pkl", training_transforms)
     val_dataset = USGDataset("validation_dataset.pkl", testing_transforms)
 
-    train_dataloader = DataLoader(train_dataset, 32, shuffle=True, num_workers=2)
-    test_dataloader = DataLoader(val_dataset, 32, shuffle=True, num_workers=2)
+    train_dataloader = DataLoader(train_dataset, 16, shuffle=True, num_workers=0)
+    test_dataloader = DataLoader(val_dataset, 16, shuffle=False, num_workers=0)
 
-    net = ResidualAttentionModel_56()
+    net = ResidualAttentionModel_92()
     net.to(device)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=0.1, momentum=0.9, nesterov=True, weight_decay=0.0001)
+    optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9, nesterov=True, weight_decay=0.0001)
     scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 200, 250], gamma=0.1)
 
     for epoch in tqdm.tqdm(range(300)):  # loop over the dataset multiple times
@@ -58,7 +84,7 @@ if __name__ == "__main__":
 
             running_loss += loss.item()
             if i % 10 == 9:
-                writer.add_scalar("Loss/train", running_loss/10)
+                writer.add_scalar("Loss/train", running_loss/10, i+epoch*len(train_dataloader))
                 running_loss = 0.0
 
         number = 0
@@ -78,9 +104,9 @@ if __name__ == "__main__":
                 loss_sum += loss.item()
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
-        writer.add_scalar("Loss/test", running_loss/number)
-        writer.add_scalar("Accuracy/test", correct/total)
+        writer.add_scalar("Loss/test", running_loss/number, epoch)
+        writer.add_scalar("Accuracy/test", correct/total, epoch)
 
-    PATH = './Res_56.pth'
+    PATH = './Res_92.pth'
     torch.save(net.state_dict(), PATH)
 

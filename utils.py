@@ -23,7 +23,8 @@ class USGDataset(Dataset):
         image = self.whole_set['lower'][idx]
         if self.transforms:
             image = self.transforms(image)
-        label = torch.tensor(self.whole_set['target'][idx])
+	if 'target' in self.whole_set:
+            label = torch.tensor(self.whole_set['target'][idx])
         identifier = torch.tensor(int(self.whole_set['id'][idx]))
 
         return {
