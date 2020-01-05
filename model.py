@@ -30,28 +30,19 @@ class ResidualAttentionModel_92(nn.Module):
             nn.ReLU(inplace=True),
             nn.AvgPool2d(kernel_size=7, stride=1)
         )
-        self.fc = nn.Linear(2048,2)
+        self.features = nn.Sequential(self.conv1, self.mpool1, self.residual_block1, self.attention_module1,
+                                      self.residual_block2, self.attention_module2, self.attention_module2_2,
+                                      self.residual_block3, self.attention_module3, self.attention_module3_2,
+                                      self.attention_module3_3, self.residual_block4, self.residual_block5,
+                                      self.residual_block6)
+        self.fc = nn.Linear(2048,1)
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        out = self.conv1(x)
-        out = self.mpool1(out)
-        # print(out.data)
-        out = self.residual_block1(out)
-        out = self.attention_module1(out)
-        out = self.residual_block2(out)
-        out = self.attention_module2(out)
-        out = self.attention_module2_2(out)
-        out = self.residual_block3(out)
-        # print(out.data)
-        out = self.attention_module3(out)
-        out = self.attention_module3_2(out)
-        out = self.attention_module3_3(out)
-        out = self.residual_block4(out)
-        out = self.residual_block5(out)
-        out = self.residual_block6(out)
+        out = self.features(x)
         out = self.mpool2(out)
         out = out.view(out.size(0), -1)
-        out = self.fc(out)
+        out = self.sigmoid(self.fc(out))
 
         return out
 
@@ -80,24 +71,17 @@ class ResidualAttentionModel_56(nn.Module):
             nn.ReLU(inplace=True),
             nn.AvgPool2d(kernel_size=7, stride=1)
         )
-        self.fc = nn.Linear(2048,2)
+        self.features = nn.Sequential(self.conv1, self.mpool1, self.residual_block1, self.attention_module1,
+                                      self.residual_block2, self.attention_module2, self.residual_block3,
+                                      self.attention_module3, self.residual_block4, self.residual_block5,
+                                      self.residual_block6)
+        self.fc = nn.Linear(2048,1)
+        self.sigmoid = nn.Sigmoid()
 
     def forward(self, x):
-        out = self.conv1(x)
-        out = self.mpool1(out)
-        # print(out.data)
-        out = self.residual_block1(out)
-        out = self.attention_module1(out)
-        out = self.residual_block2(out)
-        out = self.attention_module2(out)
-        out = self.residual_block3(out)
-        # print(out.data)
-        out = self.attention_module3(out)
-        out = self.residual_block4(out)
-        out = self.residual_block5(out)
-        out = self.residual_block6(out)
+        out = self.features(x)
         out = self.mpool2(out)
         out = out.view(out.size(0), -1)
-        out = self.fc(out)
+        out = self.sigmoid(self.fc(out))
 
         return out
