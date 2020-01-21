@@ -1,5 +1,17 @@
 # AttentionNetworkProject
+## How to run:
+You need Anaconda prompt open in the folder of the project, then you run the command:
 
+```
+conda env create -f environment.yml
+```
+You also need the weights 'Res_56_new.pth' to be in the main project path, you can download them or create through the training script.
+After the installation is completed run:
+```
+conda activate nn
+python webapp.py
+```
+To run the web application. You will be informed of the port on which on localhost you will find the app (default localhost:8050)
 ## Literature:
 * Residual Attention Network for Image Classification - https://zpascal.net/cvpr2017/Wang_Residual_Attention_Network_CVPR_2017_paper.pdf
 * CBAM: Convolutional Block Attention Module - https://eccv2018.org/openaccess/content_ECCV_2018/papers/Sanghyun_Woo_Convolutional_Block_Attention_ECCV_2018_paper.pdf
