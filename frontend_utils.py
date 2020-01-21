@@ -132,10 +132,7 @@ class Predictor:
         torch.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
 
-        if torch.cuda.is_available():
-            self.device = torch.device('cuda')
-        else:
-            self.device = torch.device('cpu')
+        self.device = torch.device('cpu')
 
         self.model = ResidualAttentionModel_56()
         self.model_path = "./Res_56_new.pth"
