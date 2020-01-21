@@ -1,4 +1,5 @@
 # AttentionNetworkProject
+The presentation is in the presentation folder.
 ## How to run:
 You need Anaconda prompt open in the folder of the project, then you run the command:
 
